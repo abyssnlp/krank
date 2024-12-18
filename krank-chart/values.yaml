@@ -1,0 +1,106 @@
+replicaCount: 1
+
+image:
+  repository: shauryarawat/krank
+  pullPolicy: IfNotPresent
+  tag: "0.2"
+
+imagePullSecrets: [ ]
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: { }
+  name: "krank-service-account"
+
+podAnnotations:
+  "app.kubernetes.io/name": "krank"
+
+podLabels:
+  "app.kubernetes.io/name": "krank"
+
+podSecurityContext: { }
+
+securityContext: { }
+
+metrics:
+  enabled: true
+
+# only applicable if metrics are enabled
+service:
+  type: ClusterIP
+  port: 8000
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+livenessProbe:
+  httpGet:
+    path: /live
+    port: 8000
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 8000
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# config for targets
+scaleConfig:
+  targets:
+    - resourceName: ""
+      messageBroker:
+        brokerType: "kafka"
+        config:
+          bootstrapServers: ""
+          saslMechanism: "PLAIN"
+          securityProtocol: "SASL_SSL"
+          saslUsername: ""
+          saslPassword: ""
+          caCertPath: "/etc/config/kafka-cert.pem"
+          trustStorePassword: "changeit"
+      services:
+        - deploymentName: "busybox-deployment"
+          resourceType: "DEPLOYMENT"
+          namespace: "default"
+          consumerGroup: "test-consumer-group"
+        - deploymentName: "busybox-deployment-2"
+          resourceType: "DEPLOYMENT"
+          namespace: "default"
+          consumerGroup: "test-consumer-group-2"
+      scalingConfiguration:
+        criticalThreshold: 1000
+        highThreshold: 500
+        normalThreshold: 100
+        minReplicas: 1
+        maxReplicas: 4
+        minScaleStep: 1
+        mediumScaleStep: 2
+        maxScaleStep: 3
+        cooldownPeriodMs: 20000
+
+kafkaCert:
+
+# Additional volumes on the output Deployment definition.
+volumes: [ ]
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: [ ]
+
+nodeSelector: { }
+
+tolerations: [ ]
+
+affinity: { }

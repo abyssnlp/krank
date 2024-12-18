@@ -1,0 +1,40 @@
+[versions]
+kafka = "3.7.0"
+amqp = "5.20.0"
+k8s = "6.10.0"
+kotlin = "1.8.1"
+slf4j = "1.7.32"
+logback = "1.3.1"
+kaml = "0.65.0"
+mockk = "1.13.13"
+mockito = "5.4.0"
+prometheus = "0.16.0"
+
+[libraries]
+kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka" }
+amqp-client = { module = "com.rabbitmq:amqp-client", version.ref = "amqp" }
+k8s-client = { module = "io.fabric8:kubernetes-client", version.ref = "k8s" }
+kotlin-coro = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockito = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito" }
+javalin = { module = "io.javalin:javalin", version = "6.3.0" }
+prometheus-client = { module = "io.prometheus:simpleclient", version.ref = "prometheus" }
+prometheus-hotspot = { module = "io.prometheus:simpleclient_hotspot", version.ref = "prometheus" }
+prometheus-common = { module = "io.prometheus:simpleclient_common", version.ref = "prometheus" }
+kotlin-coro-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin" }
+
+[bundles]
+kafka = ["kafka-clients"]
+amqp = ["amqp-client"]
+k8s = ["k8s-client"]
+logging = ["slf4j-api", "logback-classic", "logback-core"]
+testing = ["mockk", "mockito"]
+queues = ["kafka-clients", "amqp-client"]
+resourceManagers = ["k8s-client"]
+allCore = ["kafka-clients", "amqp-client", "k8s-client", "kotlin-coro", "slf4j-api", "logback-classic", "logback-core", "kaml", "javalin"]
+allTests = ["mockk", "mockito", "kotlin-coro-test"]
+monitoring = ["prometheus-client", "prometheus-hotspot", "prometheus-common"]
